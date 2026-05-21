@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+transcript.md
+*.mp3
+*.mp4
+*.wav
+*.avi
+*.mov
