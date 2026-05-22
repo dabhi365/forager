@@ -16,8 +16,10 @@ uv sync
 ## Usage
 
 ```bash
-uv run python transcribe.py
+uv run python transcribe.py <file or directory> <extension>
 ```
+
+Defaults to .mp4, see supported formats below.
 
 ## Supported formats
 
