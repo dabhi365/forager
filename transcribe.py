@@ -1,4 +1,6 @@
 from pathlib import Path
+import json
+import sys
 
 from docling.datamodel import asr_model_specs
 from docling.datamodel.base_models import InputFormat
@@ -6,9 +8,9 @@ from docling.datamodel.pipeline_options import AsrPipelineOptions
 from docling.document_converter import AudioFormatOption, DocumentConverter
 from docling.pipeline.asr_pipeline import AsrPipeline
 
-import json
 
-OUTPUT = Path("C:\\Users\\Abhinav Diwakar\\Documents\\GitHub\\video-ingestion\\data")
+
+OUTPUT = Path("data").resolve()
 
 class TranscriptResult:
     def __init__(self, document, markdown):
@@ -49,34 +51,29 @@ def transcribe_audio (
     )
 
 def main():
-    result = transcribe_audio(Path("E:\\Videos\\WRO\\001 - WRO #9 21-Day EMA Part 1, Webby Rambles On (Slight Return) [GxQpyUfZv4U].mp4"))
+    # result = transcribe_audio(Path("E:\\Videos\\WRO\\001 - WRO #9 21-Day EMA Part 1, Webby Rambles On (Slight Return) [GxQpyUfZv4U].mp4"))
     
+    directory = False
+    file   = False
+    ext = "mp4"
+    resolved_path = Path()
 
-# def main():
-#     audio_path = Path("videoplayback.mp3")
-#     assert audio_path.exists(), f"Audio file not found: {audio_path}"
+    # parse arguments
+    arg_path = sys.argv[1]
+    if sys.argv[2]:
+        ext = sys.argv[2]
 
-#     pipeline_options = AsrPipelineOptions()
-#     pipeline_options.asr_options = asr_model_specs.WHISPER_TURBO
+    # establish Path and resolve
+    if Path(arg_path).is_dir():
+        directory = True
+        resolved_path = Path(arg_path).resolve()
+    else:
+        file = True
+        resolved_path = Path(arg_path).resolve()
 
-#     converter = DocumentConverter(
-#         format_options={
-#             InputFormat.AUDIO: AudioFormatOption(
-#                 pipeline_cls=AsrPipeline,
-#                 pipeline_options=pipeline_options,
-#             )
-#         }
-#     )
-
-#     result = converter.convert(audio_path)
-#     doc = result.document
-
-#     # Save markdown transcript
-#     md = doc.export_to_markdown()
-#     Path("transcript.md").write_text(md)
-#     print("Saved transcript.md")
-#     print()
-#     print(md)
+    if directory:
+        transcription_list = resolved_path.glob(f"*.{ext}")
+        print(transcription_list)
 
 if __name__ == "__main__":
     main()
