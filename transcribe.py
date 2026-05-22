@@ -29,7 +29,10 @@ def transcribe_audio (
     #     raise FileNotFoundError
 
     pipeline_options = AsrPipelineOptions()
-    pipeline_options.asr_options = asr_model_specs.WHISPER_TURBO.model_copy(update={"verbose": False})
+    pipeline_options.asr_options = asr_model_specs.WHISPER_TURBO.model_copy(update={
+                                                                                    "verbose": False,
+                                                                                    "language": "en",
+                                                                                    })
 
     converter = DocumentConverter(
         format_options={
