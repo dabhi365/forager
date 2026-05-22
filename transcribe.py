@@ -83,10 +83,8 @@ def export_markdown_with_timestamps(result: TranscriptResult):
             write_lines.append(text)
 
     file_name.write_text("\n\n".join(write_lines), encoding="utf-8")
-    
+
 def main():
-    # result = transcribe_audio(Path("E:\\Videos\\WRO\\001 - WRO #9 21-Day EMA Part 1, Webby Rambles On (Slight Return) [GxQpyUfZv4U].mp4"))
-    
     directory = False
     file   = False
     
@@ -117,6 +115,8 @@ def main():
 
         for video in video_list:
             result = transcribe_audio(video)
+            export_markdown_with_timestamps(result)
+
 
 if __name__ == "__main__":
     main()
