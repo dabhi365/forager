@@ -117,6 +117,8 @@ def main():
         print(f"Found directory of .{ext} files.\nContains {len(video_list)} .{ext} files.")
 
         for video in video_list:
+            if (OUTPUT / extract_md_file_name(video)).exists():
+                print(f"Skipping {video}, Already processed")
             result = transcribe_audio(video)
             export_markdown_with_timestamps(result)
 
