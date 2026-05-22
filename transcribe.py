@@ -1,7 +1,9 @@
 from pathlib import Path
-import json
 import sys
 import re
+
+import warnings
+warnings.filterwarnings("ignore", message="Failed to launch Triton kernels")
 
 from docling.datamodel import asr_model_specs
 from docling.datamodel.base_models import InputFormat
@@ -10,14 +12,12 @@ from docling.document_converter import AudioFormatOption, DocumentConverter
 from docling.pipeline.asr_pipeline import AsrPipeline
 from docling_core.types.doc.document import DoclingDocument
 
-
-
+# output directory
 OUTPUT = Path("data")
 
 class TranscriptResult:
     def __init__(self, document: DoclingDocument, path: Path):
         self.document = document
-        # self.markdown = markdown
         self.path     = path
 
 def transcribe_audio (
@@ -32,6 +32,7 @@ def transcribe_audio (
     pipeline_options.asr_options = asr_model_specs.WHISPER_TURBO.model_copy(update={
                                                                                     "verbose": False,
                                                                                     "language": "en",
+                                                                                    "word_timestamps": False,
                                                                                     })
 
     converter = DocumentConverter(
@@ -88,9 +89,9 @@ def export_markdown_with_timestamps(result: TranscriptResult):
     file_name.write_text("\n\n".join(write_lines), encoding="utf-8")
 
 def main():
+    file      = False
     directory = False
-    file   = False
-    
+
     ext = "mp4"
     accepted_ext = ('wav, mp3, m4a, aac, ogg, flac, mp4, avi, mov')
 
@@ -117,11 +118,17 @@ def main():
         print(f"Found directory of .{ext} files.\nContains {len(video_list)} .{ext} files.")
 
         for video in video_list:
-            if (OUTPUT / extract_md_file_name(video)).exists():
-                print(f"Skipping {video}, Already processed")
+            print(f"Transcribing {video.stem}.")
+            if extract_md_file_name(video).exists():
+                print(f"Skipping {video.stem}, Already processed.")
+                continue
+
             result = transcribe_audio(video)
             export_markdown_with_timestamps(result)
 
+    if file:
+        result = transcribe_audio(resolved_path)
+        export_markdown_with_timestamps(result)
 
 if __name__ == "__main__":
     main()
