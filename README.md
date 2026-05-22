@@ -1,6 +1,7 @@
 # Video RAG Processing
 
 This repository serves as the pipeline for my video ingestion, transcription, and chunking for personal favorite podcasts and lectures.
+Intended to be added to my [OpenRAG](https://github.com/linagora/openrag) knowledge.
 Videos are great the first watch but referencing them later is a chore.
 
 ## What it does
