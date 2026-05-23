@@ -36,7 +36,9 @@ def get_metadata_from_file(mp4_path: Path) -> dict:
         "duration": data.get("format", {}).get("duration"),
     }
 
-## FIX FUNCTION  
+# FIX FUNCTION
+# The function is going to extract the metadata from the .mp4 files we have and
+# add them to the frontmatter of the .md transcript files.
 def execute_fix(video_dir, data_dir):
     for mp4 in video_dir.glob("*.mp4"):
         md_path = data_dir / f"{mp4.stem}.md"
