@@ -9,14 +9,6 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from transcribe import extract_md_file_name
 
-def prepend_frontmatter(md_path: Path, metadata: dict):
-    existing = md_path.read_text(encoding="utf-8")
-    if existing.startswith("---"):
-        print(f"Skipping {md_path.name} — frontmatter already exists")
-        return
-    frontmatter = yaml.dump(metadata, allow_unicode=True, sort_keys=False)
-    md_path.write_text(f"---\n{frontmatter}---\n\n{existing}", encoding="utf-8")
-
 def get_metadata_from_file(mp4_path: Path) -> dict:
     result = subprocess.run([
         "ffprobe", "-v", "quiet",
@@ -36,23 +28,30 @@ def get_metadata_from_file(mp4_path: Path) -> dict:
         "duration": data.get("format", {}).get("duration"),
     }
 
-# FIX FUNCTION
-# The function is going to extract the metadata from the .mp4 files we have and
+def prepend_frontmatter(md_path: Path, metadata: dict):
+    existing = md_path.read_text(encoding="utf-8")
+    if existing.startswith("---"):
+        print(f"Skipping {md_path.name} — frontmatter already exists")
+        return
+    frontmatter = yaml.dump(metadata, allow_unicode=True, sort_keys=False)
+    md_path.write_text(f"---\n{frontmatter}---\n\n{existing}", encoding="utf-8")
+
+# Extract the metadata from the .mp4 files we have and
 # add them to the frontmatter of the .md transcript files.
-def execute_fix(video_dir, data_dir):
-    for mp4 in video_dir.glob("*.mp4"):
-        md_path = data_dir / f"{mp4.stem}.md"
-        if not md_path.exists():
-            continue
-        metadata = get_metadata_from_file(mp4)  # or ffprobe fallback
-        prepend_frontmatter(md_path, metadata)
-        print(f"Updated {mp4.stem}")
+def metadata_extract_and_load(vid) -> bool:
+    md_path = extract_md_file_name(vid)
+    if not md_path.exists():
+        return False
+    metadata = get_metadata_from_file(vid)  # or ffprobe fallback
+    prepend_frontmatter(md_path, metadata)
+    print(f"Updated {vid.stem}")
+    return True
 
 def main():
     vid_dir = Path(sys.argv[1]).glob("*.mp4")
-    data_dir = Path("data")
-    execute_fix(vid_dir, data_dir)
-    # print(get_metadata_from_file(file))
+
+    for video in vid_dir:
+        metadata_extract_and_load(video)
 
 if __name__ == '__main__':
-    main()
+    main()    
