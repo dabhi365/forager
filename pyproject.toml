@@ -7,7 +7,9 @@ requires-python = ">=3.11"
 dependencies = [
     "docling[asr]>=2.74.0",
     "numpy>=2.4.6",
+    "pyyaml>=6.0.3",
     "torch>=2.11.0",
+    "yt-dlp>=2026.3.17",
 ]
 
 [[tool.uv.index]]
