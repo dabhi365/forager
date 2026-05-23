@@ -22,7 +22,7 @@ Transcribes video files using Docling ASR pipeline with Whisper Turbo. Docling h
 ### Usage
 
 ```bash
-uv run python transcribe.py <file or directory> <extension>
+uv run transcribe.py <file or directory> <extension>
 ```
 
 Defaults to .mp4, see supported formats below.
